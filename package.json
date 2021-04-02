@@ -1,0 +1,30 @@
+{
+  "name": "exquisite_page",
+  "version": "1.0.0",
+  "description": "frontend for single page exquisite corpse application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/revarcline/exquisite_page.git"
+  },
+  "keywords": [
+    "exquisite",
+    "corpse"
+  ],
+  "author": "Alex Cline",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/revarcline/exquisite_page/issues"
+  },
+  "homepage": "https://github.com/revarcline/exquisite_page#readme",
+  "devDependencies": {
+    "local-web-server": "^4.2.1"
+  },
+  "dependencies": {
+    "dark-mode-switcher": "^0.0.1",
+    "minstyle.io": "^1.1.0"
+  }
+}
