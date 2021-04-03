@@ -65,7 +65,7 @@ window.addEventListener("DOMContentLoaded", (e) => {
   const title = "the exquisite corpse";
   const subtitle = "a classic surrealist game";
   const content =
-    " the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play boes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.";
+    " the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play goes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.";
   introCard.createCard(title, subtitle, content);
 });
 
