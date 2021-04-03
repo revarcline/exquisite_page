@@ -10,9 +10,9 @@ class GridBuilder {
     }
   }
 
-  buildRow(id) {
+  buildRow(id, valign = "") {
     const row = document.createElement("div");
-    row.className = "row";
+    row.className = valign === "" ? "row" : `row align-self-${valign}`;
     row.id = id;
     this.container.appendChild(row);
     return row;
@@ -27,14 +27,20 @@ class GridBuilder {
   }
 }
 
+class CardBuilder {
+  constructor(parent) {
+    this.parent = parent;
+  }
+}
+
 window.addEventListener("DOMContentLoaded", (e) => {
-  const mainContainer = document.querySelector("div.container");
+  const mainContainer = document.querySelector("div#main");
   const grid = new GridBuilder(mainContainer);
-  const row1 = grid.buildRow("first-row");
-  const col1 = grid.buildCol(row1, "first-col", 3);
-  const col2 = grid.buildCol(row1, "first-col");
-  col1.innerText = "Hello";
-  col2.innerText = "World";
+  grid.row1 = grid.buildRow("first-row", "center");
+  grid.col1 = grid.buildCol(grid.row1, "first-col", 3);
+  grid.col2 = grid.buildCol(grid.row1, "first-col");
+  grid.col1.innerText = "Hello";
+  grid.col2.innerText = "World";
 });
 
 //ok so let's talk oo structure:

@@ -5,14 +5,29 @@
     <title>exquisite</title>
     <link rel="stylesheet" href="style.css" />
     <script src="index.js"></script>
+    <script
+      src="https://kit.fontawesome.com/7f3e5c406f.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
   <body>
     <div class="ms-menu">
       <div class="ms-menu-logo">
         <p>exquisite</p>
       </div>
+      <nav class="ms-menu-link">
+        <input id="ms-menu-toggle" type="checkbox" />
+        <label class="ms-menu-icon" for="ms-menu-toggle">
+          <i class="fa fa-bars"></i>
+        </label>
+        <ul>
+          <a href="#"><li>new corpse</li></a>
+          <a href="#"><li>all corpses</li></a>
+          <a href="#"><li>random corpse</li></a>
+        </ul>
+      </nav>
     </div>
-    <div class="container">
+    <div class="container d-flex align-items-center" id="main">
       <!--this is where the magic happens-->
     </div>
   </body>
