@@ -12,7 +12,7 @@ class GridBuilder {
 
   buildRow(id, valign = "") {
     const row = document.createElement("div");
-    row.className = valign === "" ? "row" : `row align-self-${valign}`;
+    row.className = valign === "" ? "row" : `row justify-content-${valign}`;
     row.id = id;
     this.container.appendChild(row);
     return row;
@@ -31,16 +31,42 @@ class CardBuilder {
   constructor(parent) {
     this.parent = parent;
   }
+
+  createCard(title, subtitle, content) {
+    const card = document.createElement("div");
+    card.className = "ms-card";
+
+    const cardTitle = document.createElement("div");
+    cardTitle.className = "ms-card-title";
+    const h2 = document.createElement("h2");
+    const sub = document.createElement("span");
+    h2.innerText = title;
+    sub.innerText = subtitle;
+    cardTitle.appendChild(h2);
+    cardTitle.appendChild(sub);
+
+    const cardContent = document.createElement("div");
+    cardContent.className = "ms-card-content";
+    cardContent.innerText = content;
+    card.appendChild(cardTitle);
+    card.appendChild(cardContent);
+    this.parent.appendChild(card);
+    return card;
+  }
 }
 
 window.addEventListener("DOMContentLoaded", (e) => {
   const mainContainer = document.querySelector("div#main");
   const grid = new GridBuilder(mainContainer);
-  grid.row1 = grid.buildRow("first-row", "center");
-  grid.col1 = grid.buildCol(grid.row1, "first-col", 3);
-  grid.col2 = grid.buildCol(grid.row1, "first-col");
-  grid.col1.innerText = "Hello";
-  grid.col2.innerText = "World";
+  grid.row1 = grid.buildRow("intro-row", "center");
+  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
+
+  const introCard = new CardBuilder(grid.col1);
+  const title = "the exquisite corpse";
+  const subtitle = "a classic surrealist game";
+  const content =
+    " the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play boes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.";
+  introCard.createCard(title, subtitle, content);
 });
 
 //ok so let's talk oo structure:
