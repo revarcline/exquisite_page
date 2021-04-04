@@ -18,10 +18,9 @@ class GridBuilder {
     return row;
   }
 
-  buildCol(row, id, sm, md, lg) {
+  buildCol(row, id, size) {
     const col = document.createElement("div");
-    col.className =
-      sm && md && lg ? `col col-sm-${sm} col-md-${md} col-lg-${lg}` : "col";
+    col.className = size ? `col-${size}` : "col";
     col.id = id;
     row.appendChild(col);
     return col;
@@ -60,7 +59,7 @@ function loadIntro(container) {
   const grid = new GridBuilder(container);
   grid.clearContainer;
   grid.row1 = grid.buildRow("intro-row", "center");
-  grid.col1 = grid.buildCol(grid.row1, "intro-col", 8, 6, 4);
+  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
 
   const introCard = new CardBuilder(grid.col1);
   const title = "the exquisite corpse";
