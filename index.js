@@ -32,7 +32,7 @@ class CardBuilder {
     this.parent = parent;
   }
 
-  createCard(title, subtitle, content) {
+  createCard(cardInfo) {
     const card = document.createElement("div");
     card.className = "ms-card";
 
@@ -40,14 +40,14 @@ class CardBuilder {
     cardTitle.className = "ms-card-title";
     const h2 = document.createElement("h2");
     const sub = document.createElement("span");
-    h2.innerText = title;
-    sub.innerText = subtitle;
+    h2.innerText = cardInfo.title;
+    sub.innerText = cardInfo.subtitle;
     cardTitle.appendChild(h2);
     cardTitle.appendChild(sub);
 
     const cardContent = document.createElement("div");
     cardContent.className = "ms-card-content";
-    cardContent.innerText = content;
+    cardContent.innerText = cardInfo.content;
     card.appendChild(cardTitle);
     card.appendChild(cardContent);
     this.parent.appendChild(card);
@@ -62,11 +62,13 @@ function loadIntro(container) {
   grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
 
   const introCard = new CardBuilder(grid.col1);
-  const title = "the exquisite corpse";
-  const subtitle = "a classic surrealist game";
-  const content =
-    " the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play goes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.";
-  introCard.createCard(title, subtitle, content);
+  const cardInfo = {
+    title: "the exquisite corpse",
+    subtitle: "a classic surrealist game",
+    content:
+      "the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play goes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.",
+  };
+  introCard.createCard(cardInfo);
 }
 
 window.addEventListener("DOMContentLoaded", (e) => {

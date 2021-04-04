@@ -3,3 +3,7 @@
 #main {
   padding: 3rem;
 }
+
+.ms-card-content {
+  line-height: 1.3;
+}
