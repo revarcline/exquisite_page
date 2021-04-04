@@ -18,9 +18,10 @@ class GridBuilder {
     return row;
   }
 
-  buildCol(row, id, size = "") {
+  buildCol(row, id, sm, md, lg) {
     const col = document.createElement("div");
-    col.className = size === "" ? "col" : `col-${size}`;
+    col.className =
+      sm && md && lg ? `col col-sm-${sm} col-md-${md} col-lg-${lg}` : "col";
     col.id = id;
     row.appendChild(col);
     return col;
@@ -55,11 +56,11 @@ class CardBuilder {
   }
 }
 
-window.addEventListener("DOMContentLoaded", (e) => {
-  const mainContainer = document.querySelector("div#main");
-  const grid = new GridBuilder(mainContainer);
+function loadIntro(container) {
+  const grid = new GridBuilder(container);
+  grid.clearContainer;
   grid.row1 = grid.buildRow("intro-row", "center");
-  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
+  grid.col1 = grid.buildCol(grid.row1, "intro-col", 8, 6, 4);
 
   const introCard = new CardBuilder(grid.col1);
   const title = "the exquisite corpse";
@@ -67,6 +68,11 @@ window.addEventListener("DOMContentLoaded", (e) => {
   const content =
     " the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play goes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.";
   introCard.createCard(title, subtitle, content);
+}
+
+window.addEventListener("DOMContentLoaded", (e) => {
+  const mainContainer = document.querySelector("div#main");
+  loadIntro(mainContainer);
 });
 
 //ok so let's talk oo structure:

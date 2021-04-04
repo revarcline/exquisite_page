@@ -1,3 +1,5 @@
-javascript frontend time!
+this is the front end!
 
-`npm install` to get riding
+uses [minstyle.io](https://minstyle.io/) for css
+
+live implementation available [here](http://exquisite.buckar.ooo)
