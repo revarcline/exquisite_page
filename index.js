@@ -70,28 +70,33 @@ class FormBuilder {
     this.form = this.createForm(formArgs);
   }
 
-  createForm(formArgs) {
-    const form = document.createElement(form);
-    form.setAttribute("method", formArgs.method);
-    form.setAttribute("action", formArgs.action);
-    this.parent.appendChild(form);
-    return form;
+  //formArgs are method, action
+  createForm() {
+    const newForm = document.createElement("form");
+    newForm.setAttribute("method", "GET");
+    newForm.setAttribute("action", "#");
+    this.parent.appendChild(newForm);
+    return newForm;
   }
 
+  //fieldArgs are type, id, placeholder, label; rows is optional
   addField(fieldArgs) {
     const formGroup = document.createElement("div");
-    const field = document.createElement("input");
-    const label = document.createElement("label");
+    const field = document.createElement(fieldArgs.type);
+
     formGroup.className = "ms-form-group";
-    field.type = fieldArgs.type;
     field.id = fieldArgs.id;
     field.placeholder = fieldArgs.placeholder;
-    label.for = fieldArgs.id;
+    if (fieldArgs.rows) field.rows = fieldArgs.rows;
+
+    formGroup.appendChild(field);
+    this.form.appendChild(formGroup);
   }
 
   addSubmit(value) {
     const submit = document.createElement("button");
     submit.type = "submit";
+    submit.className = "ms-btn ms-large";
     submit.id = "submit";
     submit.innerText = value;
     this.form.appendChild(submit);
@@ -118,6 +123,27 @@ function newCorpse(container) {
   const grid = new GridBuilder(container);
   grid.resetGrid();
   grid.col1 = grid.buildCol(grid.row1, "new-col", 6);
+
+  const title = document.createElement("h2");
+  title.className = "ms-text-center form-title";
+  title.innerText = "create a new corpse";
+  grid.col1.appendChild(title);
+
+  const form = new FormBuilder(grid.col1);
+  const titleInput = {
+    type: "input",
+    id: "corpse-title",
+    placeholder: "enter a title",
+  };
+  const entryInput = {
+    type: "textarea",
+    id: "first-entry",
+    rows: 7,
+    placeholder: "add the first entry",
+  };
+  form.addField(titleInput);
+  form.addField(entryInput);
+  form.addSubmit("create");
 }
 
 function showCorpse(container, id) {
@@ -142,7 +168,10 @@ function showCorpse(container, id) {
 
 window.addEventListener("DOMContentLoaded", (e) => {
   const mainContainer = document.querySelector("div#main");
+  const newButton = document.querySelector("a#new-corpse");
   // navbar link listeners
+  newButton.addEventListener("click", () => newCorpse(mainContainer));
+
   loadIntro(mainContainer);
-  showCorpse(mainContainer, 1);
+  // showCorpse(mainContainer, 1);
 });

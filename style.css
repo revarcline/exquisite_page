@@ -7,3 +7,11 @@
 .ms-card-content {
   line-height: 1.3;
 }
+
+.form-title {
+  line-height: 2;
+}
+
+textarea {
+  resize: vertical;
+}
