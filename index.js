@@ -154,12 +154,14 @@ function newCorpse(container) {
   corpseForm.form.addEventListener("submit", (e) => {
     e.preventDefault();
     const corpseObj = {
-      title: corpseForm.form.querySelector("input#corpse-title").value,
-      entry: {
-        content: corpseForm.form.querySelector("textarea#first-entry").value,
+      corpse: {
+        title: corpseForm.form.querySelector("input#corpse-title").value,
+        entry: {
+          content: corpseForm.form.querySelector("textarea#first-entry").value,
+        },
       },
     };
-    console.log(corpseObj);
+    console.log(postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`));
   });
 }
 
@@ -281,19 +283,29 @@ function corpseAdd(container, id) {
   entryForm.addField(entryField);
   entryForm.addSubmit("add");
 
-  // showCorpse on submit!
-  // use corpseID set by fetch to make sure we can use random route
-  // so i am posting the following object (stringified?)
-  // corpse_id
-  // content
-
   entryForm.form.addEventListener("submit", (e) => {
     e.preventDefault();
     const entryObj = {
       corpse_id: corpseID,
       content: entryForm.form.querySelector("textarea#entry-field").value,
     };
-    console.log(entryObj);
+    postStringifiedJSON(entryObj, `${backendRoot}/corpses/${corpseID}/entries`);
+    showCorpse(container, corpseID);
+  });
+}
+
+function postStringifiedJSON(body, url) {
+  const sendObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(url, sendObj).then((response) => {
+    response.json();
   });
 }
 
