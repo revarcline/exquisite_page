@@ -1,5 +1,7 @@
 const backendRoot = "http://localhost:3000";
 
+// BUILDERS
+
 class GridBuilder {
   // create rows and columns in the main container, or within any div
   constructor(container) {
@@ -65,9 +67,9 @@ class CardBuilder {
 
 class FormBuilder {
   // let's build a form
-  constructor(parent, formArgs) {
+  constructor(parent) {
     this.parent = parent;
-    this.form = this.createForm(formArgs);
+    this.form = this.createForm();
   }
 
   //formArgs are method, action
@@ -79,7 +81,7 @@ class FormBuilder {
     return newForm;
   }
 
-  //fieldArgs are type, id, placeholder, label; rows is optional
+  //fieldArgs are type, id, placeholder; rows is optional
   addField(fieldArgs) {
     const formGroup = document.createElement("div");
     const field = document.createElement(fieldArgs.type);
@@ -103,6 +105,8 @@ class FormBuilder {
     this.submit = submit;
   }
 }
+
+// VIEWS
 
 function loadIntro(container) {
   // first thing we see
@@ -151,7 +155,7 @@ function newCorpse(container) {
 function showCorpse(container, id) {
   const grid = new GridBuilder(container);
   grid.resetGrid();
-  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
+  grid.col1 = grid.buildCol(grid.row1, "corpse-col", 4);
 
   let cardInfo = {};
   const corpseCard = new CardBuilder(grid.col1);
@@ -193,7 +197,7 @@ function createCorpseLink(corpseArgs) {
 function corpseIndex(container) {
   const grid = new GridBuilder(container);
   grid.resetGrid();
-  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
+  grid.col1 = grid.buildCol(grid.row1, "list-col", 4);
 
   fetch(`${backendRoot}/corpses/`).then((response) =>
     response.json().then((data) => {
@@ -213,9 +217,67 @@ function corpseIndex(container) {
   );
 }
 
-function corpseAdd(container, id) {
-  // id is random for random button
+//previewArgs: title, created_at, preview, parent
+function generatePreview(previewArgs) {
+  const block = document.createElement("blockquote");
+  const title = document.createElement("h2");
+  const created = document.createElement("i");
+  const preview = document.createElement("h1");
+
+  block.className = "ms-blockquote";
+  title.id = "preview-title";
+  title.innerText = previewArgs.title;
+  created.innerText = `begun ${previewArgs.created_at}`;
+  preview.id = "preview-content";
+  preview.innerText = `...${previewArgs.preview}`;
+
+  block.appendChild(title);
+  block.appendChild(created);
+  block.appendChild(preview);
+  previewArgs.parent.appendChild(block);
 }
+
+function corpseAdd(container, id) {
+  let addURL = `${backendRoot}/corpses/${id}`;
+  if (id !== "random") addURL += "/add";
+  let corpseID;
+
+  const grid = new GridBuilder(container);
+  grid.resetGrid();
+  grid.col1 = grid.buildCol(grid.row1, "preview-col", 4);
+  grid.col2 = grid.buildCol(grid.row1, "entry-col", 4);
+
+  fetch(addURL).then((response) =>
+    response.json().then((data) => {
+      corpseID = data["id"];
+      const previewArgs = {
+        title: data["title"],
+        created_at: data["created_at"],
+        preview: data["preview"],
+        parent: grid.col1,
+      };
+      generatePreview(previewArgs);
+    }),
+  );
+
+  const form = new FormBuilder(grid.col2);
+  const entryField = {
+    type: "textarea",
+    id: "entry-field",
+    placeholder: "compose your entry",
+    rows: 10,
+  };
+  form.addField(entryField);
+  form.addSubmit();
+
+  // showCorpse on submit!
+  // use corpseID set by fetch to make sure we can use random route
+  // so i am posting the following object (stringified?)
+  // corpse_id
+  // content
+}
+
+// MAIN
 
 window.addEventListener("DOMContentLoaded", (e) => {
   const mainContainer = document.querySelector("div#main");
@@ -230,5 +292,4 @@ window.addEventListener("DOMContentLoaded", (e) => {
   );
 
   loadIntro(mainContainer);
-  // showCorpse(mainContainer, 1);
 });
