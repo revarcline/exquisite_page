@@ -1,7 +1,7 @@
 const backendRoot = "http://localhost:3000";
 
 class GridBuilder {
-  // creates a card in the main container
+  // create rows and columns in the main container, or within any div
   constructor(container) {
     this.container = container;
   }
@@ -45,7 +45,7 @@ class CardBuilder {
     card.className = "ms-card";
 
     const cardTitle = document.createElement("div");
-    cardTitle.className = "ms-card-title";
+    cardTitle.className = "ms-card-title ms-text-center";
     const h2 = document.createElement("h2");
     const sub = document.createElement("span");
     h2.innerText = cardInfo.title;
@@ -54,7 +54,7 @@ class CardBuilder {
     cardTitle.appendChild(sub);
 
     const cardContent = document.createElement("div");
-    cardContent.className = "ms-card-content";
+    cardContent.className = "ms-card-content ms-text-justify";
     cardContent.innerText = cardInfo.content;
     card.appendChild(cardTitle);
     card.appendChild(cardContent);
@@ -100,6 +100,7 @@ class FormBuilder {
     submit.id = "submit";
     submit.innerText = value;
     this.form.appendChild(submit);
+    this.submit = submit;
   }
 }
 
@@ -144,6 +145,7 @@ function newCorpse(container) {
   form.addField(titleInput);
   form.addField(entryInput);
   form.addSubmit("create");
+  // create submit listener for form.submit
 }
 
 function showCorpse(container, id) {
@@ -166,11 +168,66 @@ function showCorpse(container, id) {
   );
 }
 
+// corpse args are: container, parent, id, title, create_date - also need to create listener
+function createCorpseLink(corpseArgs) {
+  console.log(corpseArgs);
+  const linkDiv = document.createElement("blockquote");
+  const link = document.createElement("a");
+  const title = document.createElement("h3");
+  const created = document.createElement("i");
+
+  link.addEventListener("click", () =>
+    corpseAdd(corpseArgs.container, corpseArgs.id),
+  );
+
+  linkDiv.className = "ms-blockquote";
+  link.href = "#";
+  title.innerText = corpseArgs.title;
+  created.innerText = `began ${corpseArgs.created_at}`;
+  link.appendChild(title);
+  linkDiv.appendChild(link);
+  linkDiv.appendChild(created);
+  corpseArgs.parent.appendChild(linkDiv);
+}
+
+function corpseIndex(container) {
+  const grid = new GridBuilder(container);
+  grid.resetGrid();
+  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
+
+  fetch(`${backendRoot}/corpses/`).then((response) =>
+    response.json().then((data) => {
+      for (const item of data) {
+        console.log(item.keys);
+        let args = {
+          parent: grid.col1,
+          id: item["id"],
+          container: container,
+          title: item["title"],
+          created_at: item["created_at"],
+        };
+
+        return createCorpseLink(args);
+      }
+    }),
+  );
+}
+
+function corpseAdd(container, id) {
+  // id is random for random button
+}
+
 window.addEventListener("DOMContentLoaded", (e) => {
   const mainContainer = document.querySelector("div#main");
   const newButton = document.querySelector("a#new-corpse");
+  const indexButton = document.querySelector("a#list-all");
+  const randButton = document.querySelector("a#random-corpse");
   // navbar link listeners
   newButton.addEventListener("click", () => newCorpse(mainContainer));
+  indexButton.addEventListener("click", () => corpseIndex(mainContainer));
+  randButton.addEventListener("click", () =>
+    corpseAdd(mainContainer, "random"),
+  );
 
   loadIntro(mainContainer);
   // showCorpse(mainContainer, 1);
