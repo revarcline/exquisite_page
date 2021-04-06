@@ -156,12 +156,15 @@ function newCorpse(container) {
     const corpseObj = {
       corpse: {
         title: corpseForm.form.querySelector("input#corpse-title").value,
-        entry: {
-          content: corpseForm.form.querySelector("textarea#first-entry").value,
-        },
+        entries_attributes: [
+          {
+            content: corpseForm.form.querySelector("textarea#first-entry")
+              .value,
+          },
+        ],
       },
     };
-    console.log(postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`));
+    postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`);
   });
 }
 
