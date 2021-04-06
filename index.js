@@ -134,7 +134,7 @@ function newCorpse(container) {
   title.innerText = "create a new corpse";
   grid.col1.appendChild(title);
 
-  const form = new FormBuilder(grid.col1);
+  const corpseForm = new FormBuilder(grid.col1);
   const titleInput = {
     type: "input",
     id: "corpse-title",
@@ -146,10 +146,21 @@ function newCorpse(container) {
     rows: 7,
     placeholder: "add the first entry",
   };
-  form.addField(titleInput);
-  form.addField(entryInput);
-  form.addSubmit("create");
+  corpseForm.addField(titleInput);
+  corpseForm.addField(entryInput);
+  corpseForm.addSubmit("create");
   // create submit listener for form.submit
+
+  corpseForm.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const corpseObj = {
+      title: corpseForm.form.querySelector("input#corpse-title").value,
+      entry: {
+        content: corpseForm.form.querySelector("textarea#first-entry").value,
+      },
+    };
+    console.log(corpseObj);
+  });
 }
 
 function showCorpse(container, id) {
@@ -249,7 +260,7 @@ function corpseAdd(container, id) {
 
   fetch(addURL).then((response) =>
     response.json().then((data) => {
-      corpseID = data["id"];
+      corpseID = data["corpse_id"];
       const previewArgs = {
         title: data["title"],
         created_at: data["created_at"],
@@ -260,21 +271,30 @@ function corpseAdd(container, id) {
     }),
   );
 
-  const form = new FormBuilder(grid.col2);
+  const entryForm = new FormBuilder(grid.col2);
   const entryField = {
     type: "textarea",
     id: "entry-field",
     placeholder: "compose your entry",
-    rows: 10,
+    rows: 11,
   };
-  form.addField(entryField);
-  form.addSubmit();
+  entryForm.addField(entryField);
+  entryForm.addSubmit("add");
 
   // showCorpse on submit!
   // use corpseID set by fetch to make sure we can use random route
   // so i am posting the following object (stringified?)
   // corpse_id
   // content
+
+  entryForm.form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    const entryObj = {
+      corpse_id: corpseID,
+      content: entryForm.form.querySelector("textarea#entry-field").value,
+    };
+    console.log(entryObj);
+  });
 }
 
 // MAIN
