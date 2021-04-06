@@ -218,7 +218,6 @@ function corpseIndex(container) {
   fetch(`${backendRoot}/corpses/`).then((response) =>
     response.json().then((data) => {
       for (const item of data) {
-        console.log(item.keys);
         let args = {
           parent: grid.col1,
           id: item["id"],
@@ -227,7 +226,7 @@ function corpseIndex(container) {
           created_at: item["created_at"],
         };
 
-        return createCorpseLink(args);
+        createCorpseLink(args);
       }
     }),
   );
@@ -292,8 +291,10 @@ function corpseAdd(container, id) {
       corpse_id: corpseID,
       content: entryForm.form.querySelector("textarea#entry-field").value,
     };
-    postStringifiedJSON(entryObj, `${backendRoot}/corpses/${corpseID}/entries`);
-    showCorpse(container, corpseID);
+    postStringifiedJSON(
+      entryObj,
+      `${backendRoot}/corpses/${corpseID}/entries`,
+    ).then(showCorpse(container, corpseID));
   });
 }
 
