@@ -321,12 +321,14 @@ window.addEventListener("DOMContentLoaded", (e) => {
   const newButton = document.querySelector("a#new-corpse");
   const indexButton = document.querySelector("a#list-all");
   const randButton = document.querySelector("a#random-corpse");
+  const logo = document.querySelector("div.ms-menu-logo");
   // navbar link listeners
   newButton.addEventListener("click", () => newCorpse(mainContainer));
   indexButton.addEventListener("click", () => corpseIndex(mainContainer));
   randButton.addEventListener("click", () =>
     corpseAdd(mainContainer, "random"),
   );
+  logo.addEventListener("click", () => loadIntro(mainContainer));
 
   loadIntro(mainContainer);
 });
