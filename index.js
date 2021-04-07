@@ -165,7 +165,10 @@ function newCorpse(container) {
         ],
       },
     };
-    postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`);
+    postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`).then((id) => {
+      console.log(id);
+      showCorpse(container, id);
+    });
   });
 }
 
@@ -309,9 +312,12 @@ function postStringifiedJSON(body, url) {
     body: JSON.stringify(body),
   };
 
-  return fetch(url, sendObj).then((response) => {
-    response.json();
-  });
+  return fetch(url, sendObj)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data);
+      return data.id;
+    });
 }
 
 // MAIN
