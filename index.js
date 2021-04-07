@@ -88,6 +88,7 @@ class FormBuilder {
     const field = document.createElement(fieldArgs.type);
 
     formGroup.className = "ms-form-group";
+    formGroup.id = `${fieldArgs.id}-group`;
     field.id = fieldArgs.id;
     field.placeholder = fieldArgs.placeholder;
     if (fieldArgs.rows) field.rows = fieldArgs.rows;
@@ -132,6 +133,37 @@ function loadIntro(container) {
   introCard.createCard(cardInfo);
 }
 
+function validateWordCount(textAreaDiv) {
+  const contents = textAreaDiv.querySelector("textarea").value;
+  if (contents.split(" ").length > 20) {
+    return true;
+  } else {
+    const alert = document.createElement("div");
+    alert.className = "ms-alert";
+    alert.innerText = "entry must be more than 20 words";
+    textAreaDiv.appendChild(alert);
+    return false;
+  }
+}
+
+function validatePresence(titleDiv) {
+  const contents = titleDiv.querySelector("input").value;
+  if (contents.length > 0) {
+    return true;
+  } else {
+    const alert = document.createElement("div");
+    alert.className = "ms-alert";
+    alert.innerText = "please enter a title";
+    titleDiv.appendChild(alert);
+    return false;
+  }
+}
+
+function clearAlerts() {
+  const alerts = document.querySelectorAll("div.ms-alert");
+  alerts.forEach((alert) => alert.remove());
+}
+
 function newCorpse(container) {
   const grid = new GridBuilder(container);
   grid.resetGrid();
@@ -161,20 +193,32 @@ function newCorpse(container) {
 
   corpseForm.form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const corpseObj = {
-      corpse: {
-        title: corpseForm.form.querySelector("input#corpse-title").value,
-        entries_attributes: [
-          {
-            content: corpseForm.form.querySelector("textarea#first-entry")
-              .value,
-          },
-        ],
-      },
-    };
-    postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`).then((id) => {
-      showCorpse(container, id);
-    });
+    const titleDiv = corpseForm.form.querySelector(
+      `div#${titleInput.id}-group`,
+    );
+    const entryDiv = corpseForm.form.querySelector(
+      `div#${entryInput.id}-group`,
+    );
+    clearAlerts();
+
+    if (validateWordCount(entryDiv) && validatePresence(titleDiv)) {
+      const corpseObj = {
+        corpse: {
+          title: corpseForm.form.querySelector("input#corpse-title").value,
+          entries_attributes: [
+            {
+              content: corpseForm.form.querySelector("textarea#first-entry")
+                .value,
+            },
+          ],
+        },
+      };
+      postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`).then((id) => {
+        showCorpse(container, id);
+      });
+    } else {
+      console.log("invalid entry");
+    }
   });
 }
 
@@ -296,14 +340,21 @@ function corpseAdd(container, id) {
 
   entryForm.form.addEventListener("submit", (e) => {
     e.preventDefault();
-    const entryObj = {
-      corpse_id: corpseID,
-      content: entryForm.form.querySelector("textarea#entry-field").value,
-    };
-    postStringifiedJSON(
-      entryObj,
-      `${backendRoot}/corpses/${corpseID}/entries`,
-    ).then(showCorpse(container, corpseID));
+    const entryDiv = entryForm.form.querySelector("#entry-field-group");
+    clearAlerts();
+
+    if (validateWordCount(entryDiv)) {
+      const entryObj = {
+        corpse_id: corpseID,
+        content: entryForm.form.querySelector("textarea#entry-field").value,
+      };
+      postStringifiedJSON(
+        entryObj,
+        `${backendRoot}/corpses/${corpseID}/entries`,
+      ).then(showCorpse(container, corpseID));
+    } else {
+      console.log("invalid entry");
+    }
   });
 }
 
