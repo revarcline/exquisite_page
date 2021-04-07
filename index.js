@@ -173,7 +173,6 @@ function newCorpse(container) {
       },
     };
     postStringifiedJSON(corpseObj, `${backendRoot}/corpses/`).then((id) => {
-      console.log(id);
       showCorpse(container, id);
     });
   });
@@ -201,7 +200,6 @@ function showCorpse(container, id) {
 
 // corpse args are: container, parent, id, title, create_date - also need to create listener
 function createCorpseLink(corpseArgs) {
-  console.log(corpseArgs);
   const linkDiv = document.createElement("blockquote");
   const link = document.createElement("a");
   const title = document.createElement("h3");
@@ -322,7 +320,6 @@ function postStringifiedJSON(body, url) {
   return fetch(url, sendObj)
     .then((response) => response.json())
     .then((data) => {
-      console.log(data);
       return data.id;
     });
 }
