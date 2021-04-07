@@ -111,6 +111,13 @@ class FormBuilder {
 
 function loadIntro(container) {
   // first thing we see
+  // but before that let's ping the backend so it spins up (thanks heroku)
+  fetch(backendRoot).then((response) => {
+    console.log(response);
+    console.log("backend live");
+    return response;
+  });
+
   const grid = new GridBuilder(container);
   grid.resetGrid();
   grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
