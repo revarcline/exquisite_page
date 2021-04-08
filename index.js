@@ -108,29 +108,20 @@ class FormBuilder {
   }
 }
 
-// VIEWS
+// HELPERS
 
-function loadIntro(container) {
-  // first thing we see
-  // but before that let's ping the backend so it spins up (thanks heroku)
-  fetch(backendRoot).then((response) => {
-    console.log(response);
-    console.log("backend live");
-    return response;
-  });
+function showLoadingAnimation(parent) {
+  const loader = document.createElement("div");
+  loader.className = "sbl-circ-ripple";
+  parent.appendChild(loader);
+  console.log("loading");
+}
 
-  const grid = new GridBuilder(container);
-  grid.resetGrid();
-  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
-
-  const introCard = new CardBuilder(grid.col1);
-  const cardInfo = {
-    title: "the exquisite corpse",
-    subtitle: "a classic surrealist game",
-    content:
-      "the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play goes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.",
-  };
-  introCard.createCard(cardInfo);
+function hideLoadingAnimation() {
+  const loader = document.querySelector("div.sbl-circ-ripple");
+  console.log(loader);
+  loader.classList.add("hidden");
+  console.log("done loading");
 }
 
 function validateWordCount(textAreaDiv) {
@@ -162,6 +153,90 @@ function validatePresence(titleDiv) {
 function clearAlerts() {
   const alerts = document.querySelectorAll("div.ms-alert");
   alerts.forEach((alert) => alert.remove());
+}
+
+// corpse args are: container, parent, id, title, create_date - also need to create listener
+function createCorpseLink(corpseArgs) {
+  const linkDiv = document.createElement("blockquote");
+  const link = document.createElement("a");
+  const title = document.createElement("h3");
+  const created = document.createElement("i");
+
+  link.addEventListener("click", () =>
+    corpseAdd(corpseArgs.container, corpseArgs.id),
+  );
+
+  linkDiv.className = "ms-blockquote";
+  link.href = "#";
+  title.innerText = corpseArgs.title;
+  created.innerText = `began ${corpseArgs.created_at}`;
+  link.appendChild(title);
+  linkDiv.appendChild(link);
+  linkDiv.appendChild(created);
+  corpseArgs.parent.appendChild(linkDiv);
+}
+
+//previewArgs: title, created_at, preview, parent
+function generatePreview(previewArgs) {
+  const block = document.createElement("blockquote");
+  const title = document.createElement("h2");
+  const created = document.createElement("i");
+  const preview = document.createElement("h1");
+
+  block.className = "ms-blockquote";
+  title.id = "preview-title";
+  title.innerText = previewArgs.title;
+  created.innerText = `begun ${previewArgs.created_at}`;
+  preview.id = "preview-content";
+  preview.innerText = `...${previewArgs.preview}`;
+
+  block.appendChild(title);
+  block.appendChild(created);
+  block.appendChild(preview);
+  previewArgs.parent.appendChild(block);
+}
+
+function postStringifiedJSON(body, url) {
+  const sendObj = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify(body),
+  };
+
+  return fetch(url, sendObj)
+    .then((response) => response.json())
+    .then((data) => {
+      console.log(data.id);
+      return data.id;
+    });
+}
+
+// VIEWS
+
+function loadIntro(container) {
+  // first thing we see
+  // but before that let's ping the backend so it spins up (thanks heroku)
+  fetch(backendRoot).then((response) => {
+    console.log(response);
+    console.log("backend live");
+    return response;
+  });
+
+  const grid = new GridBuilder(container);
+  grid.resetGrid();
+  grid.col1 = grid.buildCol(grid.row1, "intro-col", 4);
+
+  const introCard = new CardBuilder(grid.col1);
+  const cardInfo = {
+    title: "the exquisite corpse",
+    subtitle: "a classic surrealist game",
+    content:
+      "the exquisite corpse is a parlor game once popular among andré breton's cadre of surrealist artists. play goes as thus: one person begins a poem or story, and then the next player continues it seeing only the very last portion. play continues ad nauseum. the results can range from silly to dreamlike, reflecting the group's mood and whim. in this online version, each player is asked to add a minimum of 20 words to each corpse before viewing its entirety.",
+  };
+  introCard.createCard(cardInfo);
 }
 
 function newCorpse(container) {
@@ -226,6 +301,7 @@ function showCorpse(container, id) {
   const grid = new GridBuilder(container);
   grid.resetGrid();
   grid.col1 = grid.buildCol(grid.row1, "corpse-col", 4);
+  showLoadingAnimation(grid.col1);
 
   let cardInfo = {};
   const corpseCard = new CardBuilder(grid.col1);
@@ -237,39 +313,21 @@ function showCorpse(container, id) {
         subtitle: `began ${data["created_at"]}`,
         content: data["full_content"],
       };
+      hideLoadingAnimation(grid.col1);
       corpseCard.createCard(cardInfo);
     }),
   );
-}
-
-// corpse args are: container, parent, id, title, create_date - also need to create listener
-function createCorpseLink(corpseArgs) {
-  const linkDiv = document.createElement("blockquote");
-  const link = document.createElement("a");
-  const title = document.createElement("h3");
-  const created = document.createElement("i");
-
-  link.addEventListener("click", () =>
-    corpseAdd(corpseArgs.container, corpseArgs.id),
-  );
-
-  linkDiv.className = "ms-blockquote";
-  link.href = "#";
-  title.innerText = corpseArgs.title;
-  created.innerText = `began ${corpseArgs.created_at}`;
-  link.appendChild(title);
-  linkDiv.appendChild(link);
-  linkDiv.appendChild(created);
-  corpseArgs.parent.appendChild(linkDiv);
 }
 
 function corpseIndex(container) {
   const grid = new GridBuilder(container);
   grid.resetGrid();
   grid.col1 = grid.buildCol(grid.row1, "list-col", 4);
+  showLoadingAnimation(grid.col1);
 
   fetch(`${backendRoot}/corpses/`).then((response) =>
     response.json().then((data) => {
+      hideLoadingAnimation(grid.col1);
       for (const item of data) {
         let args = {
           parent: grid.col1,
@@ -285,26 +343,6 @@ function corpseIndex(container) {
   );
 }
 
-//previewArgs: title, created_at, preview, parent
-function generatePreview(previewArgs) {
-  const block = document.createElement("blockquote");
-  const title = document.createElement("h2");
-  const created = document.createElement("i");
-  const preview = document.createElement("h1");
-
-  block.className = "ms-blockquote";
-  title.id = "preview-title";
-  title.innerText = previewArgs.title;
-  created.innerText = `begun ${previewArgs.created_at}`;
-  preview.id = "preview-content";
-  preview.innerText = `...${previewArgs.preview}`;
-
-  block.appendChild(title);
-  block.appendChild(created);
-  block.appendChild(preview);
-  previewArgs.parent.appendChild(block);
-}
-
 function corpseAdd(container, id) {
   let addURL = `${backendRoot}/corpses/${id}`;
   if (id !== "random") addURL += "/add";
@@ -314,6 +352,7 @@ function corpseAdd(container, id) {
   grid.resetGrid();
   grid.col1 = grid.buildCol(grid.row1, "preview-col", 4);
   grid.col2 = grid.buildCol(grid.row1, "entry-col", 4);
+  showLoadingAnimation(grid.col1);
 
   fetch(addURL).then((response) =>
     response.json().then((data) => {
@@ -324,6 +363,7 @@ function corpseAdd(container, id) {
         preview: data["preview"],
         parent: grid.col1,
       };
+      hideLoadingAnimation(grid.col1);
       generatePreview(previewArgs);
     }),
   );
@@ -356,24 +396,6 @@ function corpseAdd(container, id) {
       console.log("invalid entry");
     }
   });
-}
-
-function postStringifiedJSON(body, url) {
-  const sendObj = {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-    body: JSON.stringify(body),
-  };
-
-  return fetch(url, sendObj)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data.id);
-      return data.id;
-    });
 }
 
 // MAIN
