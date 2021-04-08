@@ -351,7 +351,7 @@ function corpseAdd(container, id) {
       postStringifiedJSON(
         entryObj,
         `${backendRoot}/corpses/${corpseID}/entries`,
-      ).then(showCorpse(container, corpseID));
+      ).then(() => showCorpse(container, corpseID));
     } else {
       console.log("invalid entry");
     }
@@ -371,6 +371,7 @@ function postStringifiedJSON(body, url) {
   return fetch(url, sendObj)
     .then((response) => response.json())
     .then((data) => {
+      console.log(data.id);
       return data.id;
     });
 }
