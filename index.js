@@ -33,7 +33,7 @@ class GridBuilder {
 
   resetGrid() {
     this.clearContainer();
-    this.row1 = this.buildRow("new-row", "center");
+    this.row1 = this.buildRow("top-row", "center");
   }
 }
 
