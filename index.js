@@ -163,9 +163,9 @@ function createCorpseLink(corpseArgs) {
   const created = document.createElement("i");
 
   link.addEventListener("click", (e) => {
-      e.preventDefault();
-      corpseAdd(corpseArgs.container, corpseArgs.id)
-    });
+    e.preventDefault();
+    corpseAdd(corpseArgs.container, corpseArgs.id);
+  });
 
   linkDiv.className = "ms-blockquote";
   link.href = "#";
@@ -352,7 +352,7 @@ function corpseIndex(container) {
   );
 
   reverse.addEventListener("click", (e) => {
-    e.preventDefault()
+    e.preventDefault();
     const oldList = [...listHolder.children];
 
     while (listHolder.children[0]) {
@@ -421,7 +421,7 @@ function corpseAdd(container, id) {
 
 // MAIN
 
-window.addEventListener("DOMContentLoaded", (e) => {
+window.addEventListener("DOMContentLoaded", () => {
   const mainContainer = document.querySelector("div#main");
   const newButton = document.querySelector("a#new-corpse");
   const indexButton = document.querySelector("a#list-all");
@@ -434,16 +434,15 @@ window.addEventListener("DOMContentLoaded", (e) => {
   });
   indexButton.addEventListener("click", (e) => {
     e.preventDefault();
-    corpseIndex(mainContainer) });
-  randButton.addEventListener("click", (e) =>
-    {
+    corpseIndex(mainContainer);
+  });
+  randButton.addEventListener("click", (e) => {
     e.preventDefault();
-    corpseAdd(mainContainer, "random"),
-    }
-  );
+    corpseAdd(mainContainer, "random");
+  });
   logo.addEventListener("click", (e) => {
-    e.preventDefault()
-    loadIntro(mainContainer) 
+    e.preventDefault();
+    loadIntro(mainContainer);
   });
 
   loadIntro(mainContainer);

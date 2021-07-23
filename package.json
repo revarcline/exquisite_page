@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/revarcline/exquisite_page#readme",
   "devDependencies": {
+    "eslint": "^7.31.0",
     "local-web-server": "^4.2.1"
   },
   "dependencies": {
