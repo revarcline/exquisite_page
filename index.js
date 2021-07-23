@@ -163,8 +163,8 @@ function createCorpseLink(corpseArgs) {
   const created = document.createElement("i");
 
   link.addEventListener("click", (e) => {
-      e.preventDefault()
-      corpseAdd(corpseArgs.container, corpseArgs.id),
+      e.preventDefault();
+      corpseAdd(corpseArgs.container, corpseArgs.id)
     });
 
   linkDiv.className = "ms-blockquote";
