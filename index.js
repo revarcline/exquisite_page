@@ -162,7 +162,8 @@ function createCorpseLink(corpseArgs) {
   const title = document.createElement("h3");
   const created = document.createElement("i");
 
-  link.addEventListener("click", () =>
+  link.addEventListener("click", (e) =>
+    e.preventDefault()
     corpseAdd(corpseArgs.container, corpseArgs.id),
   );
 
@@ -325,22 +326,42 @@ function corpseIndex(container) {
   grid.col1 = grid.buildCol(grid.row1, "list-col", 4);
   showLoadingAnimation(grid.col1);
 
+  const reverse = document.createElement("button");
+  reverse.className = "ms-btn ms-large";
+  reverse.innerText = "reverse order";
+  grid.col1.appendChild(reverse);
+
+  const listHolder = document.createElement("div");
+  listHolder.className = "list-holder";
+  grid.col1.appendChild(listHolder);
+
   fetch(`${backendRoot}/corpses/`).then((response) =>
     response.json().then((data) => {
       hideLoadingAnimation(grid.col1);
       for (const item of data) {
         let args = {
-          parent: grid.col1,
+          parent: listHolder,
           id: item["id"],
           container: container,
           title: item["title"],
           created_at: item["created_at"],
         };
-
         createCorpseLink(args);
       }
     }),
   );
+
+  reverse.addEventListener("click", (e) => {
+    e.preventDefault()
+    const oldList = [...listHolder.children];
+
+    while (listHolder.children[0]) {
+      listHolder.children[0].remove();
+    }
+    for (let i = oldList.length; i--; i > 0) {
+      listHolder.append(oldList[i]);
+    }
+  });
 }
 
 function corpseAdd(container, id) {
@@ -407,12 +428,23 @@ window.addEventListener("DOMContentLoaded", (e) => {
   const randButton = document.querySelector("a#random-corpse");
   const logo = document.querySelector("div.ms-menu-logo");
   // navbar link listeners
-  newButton.addEventListener("click", () => newCorpse(mainContainer));
-  indexButton.addEventListener("click", () => corpseIndex(mainContainer));
-  randButton.addEventListener("click", () =>
+  newButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    newCorpse(mainContainer);
+  });
+  indexButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    corpseIndex(mainContainer) });
+  randButton.addEventListener("click", (e) =>
+    {
+    e.preventDefault();
     corpseAdd(mainContainer, "random"),
+    }
   );
-  logo.addEventListener("click", () => loadIntro(mainContainer));
+  logo.addEventListener("click", (e) => {
+    e.preventDefault()
+    loadIntro(mainContainer) 
+  });
 
   loadIntro(mainContainer);
 });
